@@ -3,7 +3,6 @@ import tensorflow_text as text
 from pathlib import Path
 import tensorflow as tf
 
-
 def test_ted_batch():
     train_batches, val_batches = create_ted_datasets()
     en_tokenizer, pt_tokenizer = get_ted_tokenizer()
