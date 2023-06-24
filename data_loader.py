@@ -74,11 +74,11 @@ def prepare_encorp_batch(k):
 
     return (en, hi_inputs), hi_labels
 def get_ted_tokenizer():
-    en_tokenizer = TransformerTokenizer('data/en_ted_vocab.txt', res_tokens=reserved_tokens)
-    pt_tokenizer = TransformerTokenizer('data/pt_ted_vocab.txt', res_tokens=reserved_tokens)
+    en_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/en_ted_vocab.txt', res_tokens=reserved_tokens)
+    pt_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/pt_ted_vocab.txt', res_tokens=reserved_tokens)
     return en_tokenizer, pt_tokenizer
 
 def get_encorp_tokenizer():
-    en_tokenizer = TransformerTokenizer('data/en_vocab_encorp.txt', res_tokens=reserved_tokens)
-    hi_tokenizer = TransformerTokenizer('data/hindi_vocab_encorp.txt', res_tokens=reserved_tokens)
+    en_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/en_vocab_encorp.txt', res_tokens=reserved_tokens)
+    hi_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/hindi_vocab_encorp.txt', res_tokens=reserved_tokens)
     return en_tokenizer, hi_tokenizer
