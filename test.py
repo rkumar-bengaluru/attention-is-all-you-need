@@ -3,6 +3,9 @@ import tensorflow_text as text
 from pathlib import Path
 import tensorflow as tf
 
+from model.transformer import Transformer
+
+
 def test_ted_batch():
     train_batches, val_batches = create_ted_datasets()
     en_tokenizer, pt_tokenizer = get_ted_tokenizer()
@@ -27,6 +30,7 @@ def test_ted_batch():
         print(en_line.shape)
         print(label.shape)
 
+
 def test_encorp_batch():
     train_batches, val_batches = create_encorp_datasets()
     en_tokenizer, hi_tokenizer = get_encorp_tokenizer()
@@ -50,9 +54,13 @@ def test_encorp_batch():
         print(en_line.shape)
         print(hi_line.shape)
         print(label.shape)
+
+
 def main():
-    #test_ted_batch()
-    test_encorp_batch()
+    # test_ted_batch()
+    # test_encorp_batch()
+    encoder = Transformer(num_layers=2,d_model=2,num_heads=2,dff=2,src_vocab_size=2,target_vocab_size=2,dropout_rate=0.1)
+
 
 
 if __name__ == "__main__":

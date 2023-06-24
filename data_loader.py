@@ -5,11 +5,16 @@ from vocabulary.tokenizer import TransformerTokenizer
 
 MAX_TOKENS = 128
 BUFFER_SIZE = 20000
-BATCH_SIZE = 1
+BATCH_SIZE = 32
 
 
-def create_encorp_datasets():
-    hds = tfds.load('huggingface:hind_encorp')
+def create_ted_datasets_raw():
+    ted_samples, metadata = tfds.load('ted_hrlr_translate/pt_to_en',
+                                      with_info=True,
+                                      as_supervised=True)
+    train_samples, val_samples = ted_samples['train'], ted_samples['validation']
+    return train_samples,val_samples
+    
 def create_ted_datasets():
     ted_samples, metadata = tfds.load('ted_hrlr_translate/pt_to_en',
                                       with_info=True,

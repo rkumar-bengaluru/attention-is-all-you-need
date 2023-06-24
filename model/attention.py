@@ -12,13 +12,13 @@ class BaseAttention(tf.keras.layers.Layer):
 
 class CrossAttention(BaseAttention):
 
-    def call(self, inputs, x, context):
+    def call(self, x, context):
         attn_output, attn_scores = self.multi_head_attention(query=x,
                                                              key=context,
                                                              value=context,
                                                              return_attention_scores=True)
         self.last_attn_scores = attn_scores
-        x = self.add(x, attn_output)
+        x = self.add([x, attn_output])
         x = self.layer_norm(x)
 
         return x
@@ -42,7 +42,7 @@ class CasualSelfAttention(BaseAttention):
         attn_output = self.multi_head_attention(query=x,
                                                 value=x,
                                                 key=x,
-                                                use_casual_mask=True)
+                                                use_causal_mask=True)
         x = self.add([x, attn_output])
         x = self.layer_norm(x)
 

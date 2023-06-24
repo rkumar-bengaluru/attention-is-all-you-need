@@ -50,7 +50,7 @@ class DecoderBlock(tf.keras.layers.Layer):
         x = self.positional_embedding(x)
         x = self.dropout(x)
         for i in range(self.num_layers):
-            x = self.decoder_layer[i](x)
+            x = self.decoder_layer[i](x, context)
 
         self.last_attn_scores = self.decoder_layer[-1].last_attn_scores
         
