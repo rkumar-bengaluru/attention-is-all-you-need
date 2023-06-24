@@ -3,7 +3,7 @@ import tensorflow as tf
 
 class FeedForward(tf.keras.layers.Layer):
 
-    def __int__(self, d_model, dff, dropout_rate=0.1):
+    def __init__(self, d_model, dff, dropout_rate=0.1):
         super().__init__()
         self.seq = tf.keras.Sequential([tf.keras.layers.Dense(dff, activation='relu'),
                                         tf.keras.layers.Dense(d_model),

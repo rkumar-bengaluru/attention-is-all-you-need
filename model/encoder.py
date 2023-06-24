@@ -1,12 +1,12 @@
 import tensorflow as tf
-from attention import GlobalSelfAttention
-from feed_forward import FeedForward
-from positional_embedding import PositionalEmbedding
+from model.attention import GlobalSelfAttention
+from model.feed_forward import FeedForward
+from model.positional_embedding import PositionalEmbedding
 
 
 class EncoderLayer(tf.keras.layers.Layer):
 
-    def __int__(self, *, d_model, num_heads, dff, dropout_rate=0.1):
+    def __init__(self, *, d_model, num_heads, dff, dropout_rate=0.1):
         super().__init__()
 
         self.self_attention = GlobalSelfAttention(num_heads=num_heads,
@@ -23,7 +23,7 @@ class EncoderLayer(tf.keras.layers.Layer):
 
 class EncoderBlock(tf.keras.layers.Layer):
 
-    def __int__(self, *, num_layers, d_model, num_heads, dff, vocab_size, dropout_rate=0.1):
+    def __init__(self, *, num_layers, d_model, num_heads, dff, vocab_size, dropout_rate=0.1):
         super().__init__()
 
         self.d_model = d_model

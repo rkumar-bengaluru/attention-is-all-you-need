@@ -1,7 +1,7 @@
 import tensorflow as tf
-from attention import CasualSelfAttention, CrossAttention
-from feed_forward import FeedForward
-from positional_embedding import PositionalEmbedding
+from model.attention import CasualSelfAttention, CrossAttention
+from model.feed_forward import FeedForward
+from model.positional_embedding import PositionalEmbedding
 
 class DecoderLayer(tf.keras.layers.Layer):
 
@@ -10,10 +10,10 @@ class DecoderLayer(tf.keras.layers.Layer):
 
         self.casual_self_attn = CasualSelfAttention(num_heads=num_heads,
                                                     key_dim=d_model,
-                                                    dropout_rate=dropout_rate)
+                                                    dropout=dropout_rate)
         self.cross_attn = CrossAttention(num_heads=num_heads,
                                          key_dim=d_model,
-                                         dropout_rate=dropout_rate)
+                                         dropout=dropout_rate)
         self.ffn = FeedForward(d_model, dff)
         self.last_attn_scores = None
 
@@ -33,7 +33,7 @@ class DecoderBlock(tf.keras.layers.Layer):
         super(DecoderBlock, self).__init__()
 
         self.d_model = d_model
-        self.num_layers = num_heads
+        self.num_layers = num_layers
 
         self.positional_embedding = PositionalEmbedding(vocab_size=vocab_size,
                                                         d_model=d_model)

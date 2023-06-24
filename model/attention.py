@@ -3,7 +3,7 @@ import tensorflow as tf
 
 class BaseAttention(tf.keras.layers.Layer):
 
-    def __int(self, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__()
         self.multi_head_attention = tf.keras.layers.MultiHeadAttention(**kwargs)
         self.layer_norm = tf.keras.layers.LayerNormalization()
@@ -12,11 +12,7 @@ class BaseAttention(tf.keras.layers.Layer):
 
 class CrossAttention(BaseAttention):
 
-    def __init__(self):
-        super().__init__()
-        self.last_attn_scores = None
-
-    def call(self, inputs, x, context, *args, **kwargs):
+    def call(self, inputs, x, context):
         attn_output, attn_scores = self.multi_head_attention(query=x,
                                                              key=context,
                                                              value=context,
@@ -30,7 +26,7 @@ class CrossAttention(BaseAttention):
 
 class GlobalSelfAttention(BaseAttention):
 
-    def call(self, x, *args, **kwargs):
+    def call(self, x):
         attn_output = self.multi_head_attention(query=x,
                                                 value=x,
                                                 key=x)
@@ -42,7 +38,7 @@ class GlobalSelfAttention(BaseAttention):
 
 class CasualSelfAttention(BaseAttention):
 
-    def call(self, x, *args, **kwargs):
+    def call(self, x):
         attn_output = self.multi_head_attention(query=x,
                                                 value=x,
                                                 key=x,
