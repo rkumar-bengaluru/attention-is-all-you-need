@@ -5,7 +5,7 @@ from vocabulary.tokenizer import TransformerTokenizer
 
 MAX_TOKENS = 128
 BUFFER_SIZE = 20000
-BATCH_SIZE = 8
+BATCH_SIZE = 64
 DATA_DIR = '/content/attention-is-all-you-need/data/'
 # DATA_DIR = './data/'
 
