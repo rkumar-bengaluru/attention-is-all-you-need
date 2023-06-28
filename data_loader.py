@@ -5,7 +5,9 @@ from vocabulary.tokenizer import TransformerTokenizer
 
 MAX_TOKENS = 128
 BUFFER_SIZE = 20000
-BATCH_SIZE = 32
+BATCH_SIZE = 8
+DATA_DIR = '/content/attention-is-all-you-need/data/'
+# DATA_DIR = './data/'
 
 
 def create_ted_datasets_raw():
@@ -74,8 +76,10 @@ def prepare_encorp_batch(k):
 
     return (en, hi_inputs), hi_labels
 def get_ted_tokenizer():
-    en_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/en_ted_vocab.txt', res_tokens=reserved_tokens)
-    pt_tokenizer = TransformerTokenizer('/content/attention-is-all-you-need/data/pt_ted_vocab.txt', res_tokens=reserved_tokens)
+    en_ted = DATA_DIR + 'en_ted_vocab.txt'
+    pt_ted = DATA_DIR + 'pt_ted_vocab.txt'
+    en_tokenizer = TransformerTokenizer(en_ted, res_tokens=reserved_tokens)
+    pt_tokenizer = TransformerTokenizer(pt_ted, res_tokens=reserved_tokens)
     return en_tokenizer, pt_tokenizer
 
 def get_encorp_tokenizer():
