@@ -18,4 +18,13 @@ class TransformerScheduler(tf.keras.optimizers.schedules.LearningRateSchedule):
         arg2 = step * (self.warmup_speed ** -1.5)
 
         return tf.math.rsqrt(self.d_model) * tf.math.minimum(arg1, arg2)
+    
+    def get_config(self):
+        config = {
+            'd_model':self.d_model,
+            'warmup_steps':self.warmup_steps
+
+        }
+        base_config = super(TransformerScheduler, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
 
