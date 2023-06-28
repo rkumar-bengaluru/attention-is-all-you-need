@@ -24,14 +24,14 @@ class TransformerTranslator(tf.Module):
         output_array = output_array.write(0, start)
 
         for i in tf.range(max_length):
-            output = tf.transpose(output_array.stack())
-            predictions = self.transformer([encoder_input, output], training=False)
-            predictions = predictions[:, -1, :]
-            predicted_id = tf.argmax(predictions, axis=-1)
-            output_array = output_array.write(i + 1, predicted_id[0])
-
-            if predicted_id == end:
+              output = tf.transpose(output_array.stack())
+              predictions = self.transformer([encoder_input, output], training=False)
+              predictions = predictions[:, -1:, :]  # Shape `(batch_size, 1, vocab_size)`.
+              predicted_id = tf.argmax(predictions, axis=-1)
+              output_array = output_array.write(i+1, predicted_id[0])
+              if predicted_id == end:
                 break
+    
         output = tf.transpose(output_array.stack())
         text = self.en_tokenizer.detokenize(output)[0]
         tokens = self.en_tokenizer.lookup(output)[0]
