@@ -3,7 +3,7 @@ import tensorflow as tf
 
 class TransformerTranslator(tf.Module):
 
-    def __int__(self, tokenizers, transformer):
+    def __init__(self, tokenizers, transformer):
         super().__init__()
 
         self.en_tokenizer, self.pt_tokenizer = tokenizers
