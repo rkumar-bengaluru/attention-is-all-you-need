@@ -22,7 +22,7 @@ class TransformerScheduler(tf.keras.optimizers.schedules.LearningRateSchedule):
     def get_config(self):
         config = {
             'd_model':self.d_model,
-            'warmup_steps':self.warmup_steps
+            'warmup_speed':self.warmup_speed
 
         }
         base_config = super(TransformerScheduler, self).get_config()
