@@ -57,6 +57,9 @@ class TransformerTraining:
     def get_model(self):
         return self.transformer
     
+    def get_schedule(self):
+        return self.scheduler
+    
     def compile(self):
         self.transformer.compile(loss=masked_loss,
                                  optimizer=self.optimizer,

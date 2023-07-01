@@ -2,9 +2,10 @@ from data_loader import create_ted_datasets, create_encorp_datasets, get_ted_tok
 import tensorflow_text as text
 from pathlib import Path
 import tensorflow as tf
-
+from train import TransformerTraining
 from model.transformer import Transformer
-
+from model.testmodel import TestModel
+from model.positional_embedding import PositionalEmbedding
 
 def test_ted_batch():
     train_batches, val_batches = create_ted_datasets()
@@ -56,11 +57,84 @@ def test_encorp_batch():
         print(label.shape)
 
 
+def train():
+    
+   
+    train_ted_ds, val_ted_ds = create_ted_datasets()
+    training = TransformerTraining(num_epochs=20,
+                                   steps_per_epochs=1)
+    training.compile()
+    training_history = training.fit(train_ted_ds, val_ted_ds)
+    print(training_history)
+
+def masked_accuracy(label, pred):
+    pred = tf.argmax(pred, axis=2)
+    label = tf.cast(label, pred.dtype)
+    match = label == pred
+    mask = label != 0
+    match = match & mask
+    match = tf.cast(match, dtype=tf.float32)
+    mask = tf.cast(mask, dtype=tf.float32)
+    return tf.reduce_sum(match) / tf.reduce_sum(mask)
+
+
+def masked_loss(label, pred):
+    mask = label != 0
+    loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True,
+                                                                reduction='none')
+    loss = loss_object(label, pred)
+    mask = tf.cast(mask, dtype=loss.dtype)
+    loss *= mask
+    loss = tf.reduce_sum(loss) / tf.reduce_sum(mask)
+
+    return loss
+def test_model():
+    train_ted_ds, val_ted_ds = create_ted_datasets()
+    en_tokenizer, pt_tokenizer = get_ted_tokenizer()
+    for (pt, en), en_labels in train_ted_ds.take(1):
+        break
+
+
+    embed_pt = PositionalEmbedding(vocab_size=pt_tokenizer.get_vocab_size(), d_model=512)
+    pt_embed = embed_pt(pt)
+    # print('pt_embed', pt_embed.shape)
+    model = TestModel(d_model=512,
+                      src_vocab_size=pt_tokenizer.get_vocab_size(),
+                      target_vocab_size=en_tokenizer.get_vocab_size())
+    response = model((pt, en))
+    # print(response.shape)
+    optimizer = tf.keras.optimizers.Adam(beta_1=0.9,
+                                         beta_2=0.98,
+                                         epsilon=1e-9)
+    model.compile(loss=masked_loss,
+                  optimizer=optimizer,
+                  metrics=[masked_accuracy])
+    model.fit(train_ted_ds,
+              steps_per_epoch=int(0.1* len(train_ted_ds)),
+              epochs=2,
+              validation_data=val_ted_ds,
+              validation_steps=int(0.1*len(val_ted_ds)))
+
+def test_transformer():
+    train_ted_ds, val_ted_ds = create_ted_datasets()
+    en_tokenizer, pt_tokenizer = get_ted_tokenizer()
+    for (pt, en), en_labels in train_ted_ds.take(1):
+        break
+    transformer_model = Transformer(num_layers=1,
+                                    d_model=512,
+                                    num_heads=1,
+                                    dff=2048,
+                                    src_vocab_size=pt_tokenizer.get_vocab_size(),
+                                    target_vocab_size=en_tokenizer.get_vocab_size())
+    response = transformer_model((pt,en))
+    print(response.shape)
 def main():
     # test_ted_batch()
     # test_encorp_batch()
-    encoder = Transformer(num_layers=2,d_model=2,num_heads=2,dff=2,src_vocab_size=2,target_vocab_size=2,dropout_rate=0.1)
-
+    # encoder = Transformer(num_layers=2,d_model=2,num_heads=2,dff=2,src_vocab_size=2,target_vocab_size=2,dropout_rate=0.1)
+    # train()
+    test_model()
+    #test_transformer()
 
 
 if __name__ == "__main__":
