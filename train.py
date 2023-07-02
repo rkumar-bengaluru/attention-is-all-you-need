@@ -30,7 +30,7 @@ def masked_loss(label, pred):
 
 class TransformerTraining:
 
-    def __init__(self,num_layers=4, d_mode=512, dff=2048,
+    def __init__(self, en_tokenizer, pt_tokenizer, num_layers=4, d_mode=512, dff=2048,
                 num_heads=8, dropout_rate=0.1, num_epochs=5,
                 steps_per_epochs=0.1,
                 save_freq=5):
@@ -41,7 +41,8 @@ class TransformerTraining:
         self.dropout_rate = dropout_rate
         self.num_epochs = num_epochs
         self.steps_per_epochs = steps_per_epochs
-        self.en_tokenizer, self.pt_tokenizer = get_ted_tokenizer()
+        self.en_tokenizer = en_tokenizer
+        self.pt_tokenizer = pt_tokenizer
         self.scheduler = TransformerScheduler(self.d_model)
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.scheduler,
                                                   beta_1=0.9,
