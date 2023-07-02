@@ -35,7 +35,7 @@ class DataLoader:
 
         return (pt, en_inputs), en_labels
     
-    def create_encorp_datasets():
+    def create_encorp_datasets(self):
         hds = tfds.load('huggingface:hind_encorp')
         hds_train = hds['train']
         train_split = 0.8
