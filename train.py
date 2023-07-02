@@ -2,6 +2,7 @@ import tensorflow as tf
 from model.transformer import Transformer
 from data_loader import get_ted_tokenizer
 from model.schedule import TransformerScheduler
+from data_loader import BATCH_SIZE
 
 
 def masked_accuracy(label, pred):
@@ -30,7 +31,7 @@ def masked_loss(label, pred):
 class TransformerTraining:
 
     def __init__(self,num_layers=4, d_mode=512, dff=2048,
-                num_heads=8, dropout_rate=0.1, num_epochs=3,
+                num_heads=8, dropout_rate=0.1, num_epochs=20,
                 steps_per_epochs=0.1):
         self.num_layers = num_layers
         self.d_model = d_mode
@@ -52,6 +53,12 @@ class TransformerTraining:
                                        src_vocab_size=self.pt_tokenizer.get_vocab_size(),
                                        target_vocab_size=self.en_tokenizer.get_vocab_size(),
                                        dropout_rate=self.dropout_rate)
+        self.checkpoint_path = "training/cp-{epoch:04d}.ckpt"
+        # Create a callback that saves the model's weights
+        self.cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=self.checkpoint_path, 
+                                                              verbose=1, 
+                                                              save_weights_only=True,
+                                                              save_freq=80*BATCH_SIZE)
         self.training_history = None
 
     def get_model(self):
@@ -70,5 +77,6 @@ class TransformerTraining:
                                                      steps_per_epoch=int(self.steps_per_epochs * len(train_batches)),
                                                      epochs=self.num_epochs,
                                                      validation_data=val_batches,
-                                                     validation_steps=int(self.steps_per_epochs * len(val_batches)))
+                                                     validation_steps=int(self.steps_per_epochs * len(val_batches)),
+                                                    callbacks=[self.cp_callback])
         return self.training_history

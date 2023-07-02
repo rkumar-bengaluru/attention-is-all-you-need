@@ -18,7 +18,6 @@ def positional_encoding_new(length, depth):
   return tf.cast(pos_encoding, dtype=tf.float32)
 
 def positional_encoding(length, depth):
-    print('depth')
     depth = depth/2
     positions = np.arange(length)[:, np.newaxis]
     depths = np.arange(depth)[np.newaxis, :] / depth
