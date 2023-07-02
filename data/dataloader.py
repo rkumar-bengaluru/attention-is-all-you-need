@@ -44,24 +44,23 @@ class DataLoader:
         val_size = int(val_split * len(hds_train))
 
         train_encorp_samples, val_encorp_samples = hds_train.take(train_size), hds_train.skip(train_size).take(val_size)
-        train_encorp_ds = train_encorp_samples.shuffle(BUFFER_SIZE).batch(BATCH_SIZE).map(
-            prepare_encorp_batch, tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
-        val_encorp_ds = val_encorp_samples.shuffle(BUFFER_SIZE).batch(BATCH_SIZE).map(
-            prepare_encorp_batch, tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
+        train_encorp_ds = train_encorp_samples.shuffle(self.buffer_size).batch(self.batch_size).map(
+            self.prepare_encorp_batch, tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
+        val_encorp_ds = val_encorp_samples.shuffle(self.buffer_size).batch(self.batch_size).map(
+            self.prepare_encorp_batch, tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
 
         return train_encorp_ds, val_encorp_ds
     
-    def prepare_encorp_batch(k):
-        eng_tokenizer, hi_tokenizer = get_encorp_tokenizer()
+    def prepare_encorp_batch(self, k):
         e_line = k['translation']['en']
         h_line = k['translation']['hi']
 
-        en = src_tokenizer.tokenize(e_line)
-        en = en[:, :MAX_TOKENS]
+        en = self.src_tokenizer.tokenize(e_line)
+        en = en[:, :self.max_tokens]
         en = en.to_tensor()
 
-        hi = target_tokenizer.tokenize(h_line)
-        hi = hi[:, : (MAX_TOKENS + 1)]
+        hi = self.target_tokenizer.tokenize(h_line)
+        hi = hi[:, : (self.max_tokens + 1)]
         hi_inputs = hi[:, :-1].to_tensor()
         hi_labels = hi[:, 1:].to_tensor()
 
