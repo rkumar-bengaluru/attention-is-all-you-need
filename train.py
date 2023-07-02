@@ -32,7 +32,8 @@ class TransformerTraining:
 
     def __init__(self,num_layers=4, d_mode=512, dff=2048,
                 num_heads=8, dropout_rate=0.1, num_epochs=5,
-                steps_per_epochs=0.1):
+                steps_per_epochs=0.1,
+                save_freq=5):
         self.num_layers = num_layers
         self.d_model = d_mode
         self.dff = dff
@@ -58,7 +59,7 @@ class TransformerTraining:
         self.cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=self.checkpoint_path, 
                                                               verbose=1, 
                                                               save_weights_only=True,
-                                                              save_freq=2*BATCH_SIZE)
+                                                              save_freq=save_freq*BATCH_SIZE)
         self.training_history = None
 
     def get_model(self):
