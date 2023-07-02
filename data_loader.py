@@ -75,6 +75,7 @@ def prepare_encorp_batch(k):
     hi_labels = hi[:, 1:].to_tensor()
 
     return (en, hi_inputs), hi_labels
+
 def get_ted_tokenizer(DATA_DIR='./data/'):
     en_ted = DATA_DIR + 'en_ted_vocab.txt'
     pt_ted = DATA_DIR + 'pt_ted_vocab.txt'
