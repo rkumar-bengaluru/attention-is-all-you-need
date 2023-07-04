@@ -20,3 +20,10 @@ class Tokenizer:
         en_tokenizer = TransformerTokenizer(en_ted, res_tokens=reserved_tokens)
         hi_tokenizer = TransformerTokenizer(pt_ted, res_tokens=reserved_tokens)
         return en_tokenizer, hi_tokenizer
+    
+    def get_en_hi_tokenizer(self):
+        en_ted = self.data_dir + 'en_vocab_corpus.txt'
+        pt_ted = self.data_dir + 'hi_vocab_corpus.txt'
+        en_tokenizer = TransformerTokenizer(en_ted, res_tokens=reserved_tokens)
+        hi_tokenizer = TransformerTokenizer(pt_ted, res_tokens=reserved_tokens)
+        return en_tokenizer, hi_tokenizer

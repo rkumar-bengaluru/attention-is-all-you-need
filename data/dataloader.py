@@ -1,5 +1,7 @@
 import tensorflow_datasets as tfds
 import tensorflow as tf
+import pandas as pd
+from tensorflow.data import Dataset
 
 
 class DataLoader:
@@ -50,6 +52,37 @@ class DataLoader:
             self.prepare_encorp_batch, tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
 
         return train_encorp_ds, val_encorp_ds
+    
+    def create_en_in_dataset(self, data_dir='./data/'):
+        df = pd.read_csv(data_dir + 'hindi_english_parallel.csv')
+        df.dropna(axis = 0, inplace = True)
+        train_split = 0.8
+        val_split = 0.2
+        train_size = int(train_split * len(df))
+        val_size = int(val_split * len(df))
+
+
+        dataset = Dataset.from_tensor_slices((df["english"].values, df["hindi"].values))
+        train_encorp_samples, val_encorp_samples = dataset.take(train_size), dataset.skip(train_size).take(val_size)
+        train_encorp_ds = train_encorp_samples.shuffle(self.buffer_size).batch(self.batch_size).map(
+                lambda en, hi: self.prepare_en_in_batch((en,hi)), tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
+        val_encorp_ds = val_encorp_samples.shuffle(self.buffer_size).batch(self.batch_size).map(
+                lambda en, hi: self.prepare_en_in_batch((en,hi)), tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
+        return train_encorp_ds, val_encorp_ds
+    
+    def prepare_en_in_batch(self, inputs):
+        e_line ,h_line = inputs
+        en = self.src_tokenizer.tokenize(e_line)
+        en = en[:, :self.max_tokens]
+        en = en.to_tensor()
+
+        hi = self.target_tokenizer.tokenize(h_line)
+        hi = hi[:, : (self.max_tokens + 1)]
+        hi_inputs = hi[:, :-1].to_tensor()
+        hi_labels = hi[:, 1:].to_tensor()
+
+        return (en, hi_inputs), hi_labels
+        
     
     def prepare_encorp_batch(self, k):
         e_line = k['translation']['en']
